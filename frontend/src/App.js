@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import CodeEditor from "./components/CodeEditor";
 import OutputSection from "./components/OutputSection";
-// import { loadFromIndexedDB, saveToIndexedDB } from "./lib/persistent";
-
+import { saveToLocalStorage, loadFromLocalStorage } from "./lib/localstorage";
 const App = () => {
   const [output, setOutput] = useState("");
   const [executionList, setExecutionList] = useState([]);
   useEffect(() => {
-    // const res = loadFromIndexedDB(setExecutionList);
-    // console.log(res);
-    // setExecutionList(res);
+    const res = loadFromLocalStorage();
+    setExecutionList(res);
   }, []);
 
   const executeCode = async (code) => {
@@ -21,15 +19,19 @@ const App = () => {
 
       const result = await response.text();
       setOutput(result);
-      // saveToIndexedDB(code, output);
+      const timestamp = new Date().toLocaleString();
       setExecutionList((prevList) => [
         {
           code,
           output: result,
-          timestamp: new Date().toLocaleString(),
+          timestamp,
         },
         ...prevList,
       ]);
+
+      if (response.ok) {
+        saveToLocalStorage({ code, output: result, timestamp });
+      }
     } catch (error) {
       console.error("Error executing code:", error);
     }
