@@ -9,7 +9,7 @@
 
 ## How to build
 1. `make build -f build.mk`;
-2. Then the binary is done. Start it directly by `./backend/bin/go-executor`;
+2. Then the binary is done. Change directory `cd backend` and start it directly by `./bin/go-executor`;
    
 ## How to build image
 1. `make build-image -f build.mk tag=1.0.0`;
